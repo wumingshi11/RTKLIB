@@ -9,4 +9,8 @@ Debug
 Debug_Build
 __history
 __astcache
+build
+# local tooling (not committed)
+compile_commands.json
+.cache/
 .vscode/
