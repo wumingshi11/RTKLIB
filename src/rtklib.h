@@ -544,11 +544,11 @@ typedef struct {                /* observation data record */
   uint16_t SNR[NFREQ + NEXOBS]; /* signal strength (0.001 dBHz) */
   uint8_t LLI[NFREQ + NEXOBS];  /* loss of lock indicator */
   uint8_t code[NFREQ + NEXOBS]; /* code indicator (CODE_???) */
-  // 载波相位
+  /* 载波相位 */
   double L[NFREQ + NEXOBS]; /* observation data carrier-phase (cycle) */
-  // 伪距
+  /* 伪距 */
   double P[NFREQ + NEXOBS]; /* observation data pseudorange (m) */
-  // 多普勒频移
+  /* 多普勒频移 */
   float D[NFREQ + NEXOBS]; /* observation data doppler frequency (Hz) */
 } obsd_t;
 
