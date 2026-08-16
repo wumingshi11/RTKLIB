@@ -14,3 +14,7 @@ build
 compile_commands.json
 .cache/
 .vscode/
+# build products (not committed)
+lib/iers/gcc/*.a
+app/consapp/*/gcc/rnx2rtkp
+learn/experiments/a4_dump_obs
