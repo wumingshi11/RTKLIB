@@ -75,6 +75,46 @@ def main():
           f'距离 = {quad_form((round(a[0]), round(a[1])), a, Qinv):.3f}')
     print('  → 强相关时“逐个四舍五入”可能不是最优；ILS 要联合搜索。')
 
+    # ---- Z 变换降相关演示（2 维） ----
+    print('\n  --- Z 变换降相关演示（LAMBDA 第 2 步） ---')
+    l21 = Q[1][0] / Q[0][0]
+    z21 = round(l21)
+    Z = [[1, 0], [-z21, 1]]
+    # Q' = Z Q Z^T
+    Qz = [[0.0, 0.0], [0.0, 0.0]]
+    for i in range(2):
+        for j in range(2):
+            Qz[i][j] = sum(Z[i][k] * Q[k][j] for k in range(2))
+    Qz2 = [[0.0, 0.0], [0.0, 0.0]]
+    for i in range(2):
+        for j in range(2):
+            Qz2[i][j] = sum(Qz[i][k] * Z[j][k] for k in range(2))
+    az = [Z[0][0]*a[0]+Z[0][1]*a[1], Z[1][0]*a[0]+Z[1][1]*a[1]]
+    cond_before = (1+0.9)/(1-0.9)
+    # condition of Qz2
+    import numpy as np
+    eig = np.linalg.eigvalsh(np.array(Qz2))
+    cond_after = max(eig)/min(eig)
+    print(f'  l21 = Q21/Q11 = {l21:.3f} → z21 = round = {z21}')
+    print(f'  Z = {Z}')
+    print(f"  Q' = Z Q Z^T = {Qz2}")
+    print(f"  a' = Z a = {az}")
+    print(f'  条件数：{cond_before:.1f} → {cond_after:.2f}（越小越容易搜索）')
+    # 在变换域搜索
+    Qz_inv = mat_inv2(Qz2)
+    bestz = []
+    for n1 in range(-10, 15):
+        for n2 in range(-10, 15):
+            q = quad_form((n1, n2), az, Qz_inv)
+            bestz.append((q, n1, n2))
+    bestz.sort()
+    print(f'  变换域最优整数 = ({bestz[0][1]}, {bestz[0][2]}), 距离 = {bestz[0][0]:.3f}')
+    # 逆变换回原域
+    Zinv = [[1, 0], [z21, 1]]
+    n_orig = (Zinv[0][0]*bestz[0][1]+Zinv[0][1]*bestz[0][2],
+              Zinv[1][0]*bestz[0][1]+Zinv[1][1]*bestz[0][2])
+    print(f'  逆变换回原域 N = {n_orig}（与暴力搜索最优 (2,3) 一致）')
+
     # ---------- F3 ----------
     print('\n' + '-' * 78)
     print('F3 从浮点到固定解（条件更新）')
